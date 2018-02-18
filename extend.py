@@ -29,6 +29,7 @@ MODEL_FRAME_HEIGHT = 45 #height in percent
 youtube_links_count = 0 
 models_count = 0
 source_name = SOURCE_FILE_NAME.split('.')[0]
+project_dir = os.getcwd() #project root path
 
 def printInfo():
 	print ('All parsed links:\nIf some links are incorrect, contact script programmer\n')
