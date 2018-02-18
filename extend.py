@@ -29,7 +29,7 @@ MODEL_FRAME_HEIGHT = 45 #height in percent
 youtube_links_count = 0 
 models_count = 0
 source_name = SOURCE_FILE_NAME.split('.')[0]
-project_dir = os.getcwd() #project root path
+project_dir = os.getcwd().replace('\\', '/') #project root path
 
 def printInfo():
 	print ('All parsed links:\nIf some links are incorrect, contact script programmer\n')
@@ -90,64 +90,53 @@ def setImagesPath():
 	file_w.write( changed_models_path_text )
 	closeFiles(file_w, file_r)
 
-def createDirs():
-	#try to remove models dir tree if exists
+def removeDirTree(path):
 	try:
-		shutil.rmtree(MODELS_FILES_PATH.split('/')[0]) #delete dir if already exists
+		shutil.rmtree(path) #delete dir if already exists
 	except:
 		pass
 
-	#try to remove images dir tree if exists
+def createDirTree(path):
 	try:
-		shutil.rmtree(IMAGES_FILES_PATH.split('/')[0]) #delete dir if already exists
+		os.makedirs(path)
 	except:
 		pass
 
-	#create dir tree for models
+def copyFiles(source, out):
 	try:
-		os.makedirs(MODELS_FILES_PATH)
-	except:
-		pass
-
-	#create dir tree for images
-	try:
-		os.makedirs(IMAGES_FILES_PATH)
-	except:
-		pass
-
-	#open 3d folder and copy all files to MODELS_FILES_PATH	
-	try:
-		os.chdir('3d')
+		os.chdir(source)
 		for i in os.listdir():
-			shutil.move(i, '../' + MODELS_FILES_PATH)
+			shutil.move(i, '{}/'.format(project_dir) + out)
 		os.chdir('../')
 	except FileNotFoundError:
 		pass
 	except shutil.Error as sh_e: #if error with copy or file`s already exists
 		os.chdir('../')
 
+def createDirs():
+	#try to remove models dir tree if exists
+	removeDirTree(MODELS_FILES_PATH.split('/')[0])
+
+	#try to remove images dir tree if exists
+	removeDirTree(IMAGES_FILES_PATH.split('/')[0])
+
+	#create dir tree for models
+	createDirTree(MODELS_FILES_PATH)
+
+	#create dir tree for images
+	createDirTree(IMAGES_FILES_PATH)
+
+	#open 3d folder and copy all files to MODELS_FILES_PATH	
+	copyFiles('3d', MODELS_FILES_PATH)
+
 	#open .files folder and copy all files to OUTPUT_FILE_NAME
-	try:
-		os.chdir( '{}.files'.format(source_name) )
-		for i in os.listdir():
-			shutil.move(i, '../' + IMAGES_FILES_PATH)
-		os.chdir('../')
-	except FileNotFoundError:
-		pass
-	except shutil.Error as sh_e:
-		os.chdir('../')
+	copyFiles('{}.files'.format(source_name), IMAGES_FILES_PATH)
 
 	#delete 3d folder
-	try:
-		shutil.rmtree('3d')
-	except FileNotFoundError:
-		print('dir 3d not found')
+	removeDirTree('3d')
 
 	#delete .files folder
-	try:
-		shutil.rmtree('{}.files'.format(source_name))
-	except FileNotFoundError:
-		print( 'dir {}.files not found'.format(source_name) )
+	removeDirTree('{}.files'.format(source_name))
 
 #deletes source file after parsing
 def deleteSourceFile():
