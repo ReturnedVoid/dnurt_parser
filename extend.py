@@ -113,7 +113,7 @@ def copyFiles(source, out):
 	except shutil.Error as sh_e: #if error with copy or file`s already exists
 		os.chdir('../')
 
-def createDirs():
+def setDirs():
 	#try to remove models dir tree if exists
 	removeDirTree(MODELS_FILES_PATH.split('/')[0])
 
@@ -152,7 +152,7 @@ def openFile(file_path, mode):
 		sys.exit(Fore.RED + 'Critical error: file {} does not exist'.format(file_path))
 
 #create dirs for images and models
-createDirs()
+setDirs()
 
 #header info
 printInfo()
