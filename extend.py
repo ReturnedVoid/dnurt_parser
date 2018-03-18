@@ -49,9 +49,10 @@ def parseLine(string):
 		return ''.join(words) #return words in string format
 	return '' #return empty string if we didn`t find words
 
-def closeFiles(file1, file2):
-	file1.close()
-	file2.close()
+#Close given files
+def closeFiles(*files):
+	for file in files:
+		file.close()
 
 #returns frame by given Youtube link
 def returnVideoFrame(srcLine):
@@ -203,5 +204,3 @@ deleteSourceFile()
 
 #change old src
 setImagesPath()
-
-#converting to frames moved to function
